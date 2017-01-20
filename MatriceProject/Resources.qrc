@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/color.png</file>
+        <file>Resources/curve.png</file>
+        <file>Resources/directory.png</file>
+        <file>Resources/draw.png</file>
+        <file>Resources/edit.png</file>
+        <file>Resources/gesture.png</file>
+        <file>Resources/separator.png</file>
+    </qresource>
+</RCC>
