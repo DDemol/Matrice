@@ -32,6 +32,23 @@ QString getButtonStyleSheet(QString iconDir)
             ;
 }
 
+QString getSpinBoxStyleSheet()
+{
+    return "QSpinBox "
+            "{"
+            "border-radius: 6px;"
+            "min-height: 2em;"
+            "min-width: 3em;"
+            "max-height: 2em;"
+            "max-width: 2em;"
+            "padding: 6px;"
+            "background-color: #F0F0F0;"
+            "}"
+            "QSpinBox::up-button { width: 20px; }"
+            "QSpinBox::down-button { width: 20px; }"
+            ;
+}
+
 
 void MainWindow::setScene(GraphicsScene *scene)
 {
@@ -90,22 +107,23 @@ void MainWindow::setScene(GraphicsScene *scene)
     edit->setStyleSheet(getButtonStyleSheet(":/Resources/edit.png"));
     recognize->setStyleSheet(getButtonStyleSheet(":/Resources/gesture.png"));
     palette->getAllColorButton()->setStyleSheet(getButtonStyleSheet(":/Resources/color.png"));
+    palette->getSizeButton()->setStyleSheet(getSpinBoxStyleSheet());
 
     QWidget::connect(draw, SIGNAL(clicked()), _scene, SLOT(setDraw()));
     QWidget::connect(edit, SIGNAL(clicked()), _scene, SLOT(setEdit()));
     QWidget::connect(recognize, SIGNAL(clicked()), _scene, SLOT(setRecognize()));
-
-    QWidget::connect(_scene,SIGNAL(newItemSignal(CurveItem)),tree,SLOT(insertRow(CurveItem)));
-    QWidget::connect(_scene,SIGNAL(removeItemSignal(CurveItem)),tree,SLOT(removeRow(CurveItem)));
-
     QWidget::connect(tree, SIGNAL(selectedRow(QString)) , _scene, SLOT(setSelectedRow(QString)));
     QWidget::connect(tree, SIGNAL(selectedRows(QStringList)), _scene, SLOT(setSelectedRows(QStringList)));
     QWidget::connect(tree,SIGNAL(sendNewName(QString,QString)),_scene,SLOT(changedName(QString,QString)));
+    QWidget::connect(palette, SIGNAL(sizePenClicked(int)),_scene,SLOT(setSizePen(int)));
+
 
     QWidget::connect(this, SIGNAL(resetTree(QList <CurveItem>)), tree , SLOT(removeAll(QList <CurveItem>)));
+    QWidget::connect(_scene,SIGNAL(newItemSignal(CurveItem)),tree,SLOT(insertRow(CurveItem)));
+    QWidget::connect(_scene,SIGNAL(removeItemSignal(CurveItem)),tree,SLOT(removeRow(CurveItem)));
+
 
     QWidget::connect(palette->getAllColorButton(),SIGNAL(clicked()),this,SLOT(allColor()));
-
     QWidget::connect(palette->getRedButton(),SIGNAL(clicked()),this,SLOT(redButton()));
     QWidget::connect(palette->getOrangeButton(),SIGNAL(clicked()),this,SLOT(orangeButton()));
     QWidget::connect(palette->getYellowButton(),SIGNAL(clicked()),this,SLOT(yellowButton()));

@@ -5,6 +5,7 @@ CurveItem::CurveItem()
     _ini = false;
     _color = QColor(0,0,0);
     _name = "";
+    _size = 1;
 }
 
 QList<QPointF> CurveItem::getPoints()
@@ -57,6 +58,16 @@ QString CurveItem::getName()
 void CurveItem::setName(QString name)
 {
     _name = name;
+}
+
+int CurveItem::getSizePen()
+{
+    return _size;
+}
+
+void CurveItem::setSizePen(int value)
+{
+    _size = value;
 }
 
 int CurveItem::size()

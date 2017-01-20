@@ -23,6 +23,9 @@ public:
     QString getName();
     void setName(QString name);
 
+    int getSizePen();
+    void setSizePen(int value);
+
     int size();
 
 private:
@@ -30,6 +33,7 @@ private:
     QGraphicsItemGroup *_item;
     QColor _color;
     QString _name;
+    int _size;
     bool _ini;
 
 

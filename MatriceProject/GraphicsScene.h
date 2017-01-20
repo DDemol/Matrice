@@ -44,7 +44,7 @@ public:
 
     bool findIntersectionPoint(CurveItem curveItem);
     QPointF intersection(QPointF p1,QPointF p2,QPointF p3,QPointF p4);
-    void cutItem(QList<QPointF> liste, QColor color);
+    void cutItem(QList<QPointF> liste, QColor color, int sizePen);
     void editChoice();
 
     QList <CurveItem> getItem();
@@ -56,9 +56,9 @@ public:
     void RemoveAll();
     void ResetParameters();
 
-    QGraphicsItemGroup* createGraphicsCurve(QList <QPointF> list, QColor color);
+    QGraphicsItemGroup* createGraphicsCurve(QList <QPointF> list, QColor color, int sizePen);
 
-    void drawCurve(CurveItem curveItem, QColor color);
+    void drawCurve(CurveItem curveItem, QColor color, int sizePen);
     void drawAllCurves();
 
 public slots:
@@ -70,6 +70,7 @@ public slots:
     void setRecognize();
 
     void setColorPen(QColor color);
+    void setSizePen(int value);
 
     void setSelectedRow(QString name);
     void setSelectedRows(QStringList names);
@@ -80,8 +81,6 @@ signals :
     void newItemSignal(CurveItem item);
     void removeItemSignal(CurveItem item);
 
-
-
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
@@ -89,7 +88,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    void addNewItem(QGraphicsItemGroup *item, QList<QPointF> points, QColor color);
+    void addNewItem(QGraphicsItemGroup *item, QList<QPointF> points, QColor color, int sizePen);
     bool indexOf(QList<QPointF> pointsList, QPointF point1);
     CurveItem findCurveItem(QString name);
 
@@ -102,6 +101,7 @@ private:
     QGraphicsItemGroup *_currentItem;
     QGraphicsItemGroup *_intersectionPoints;
     QColor _currentColor;
+    int _currentSizePen;
     Action _currentAction;
     bool _isDraw;
     bool _isEdit;

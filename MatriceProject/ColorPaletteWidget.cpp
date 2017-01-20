@@ -3,6 +3,7 @@
 ColorPaletteWidget::ColorPaletteWidget(): QWidget(0,Qt::FramelessWindowHint)
 {
     initButton();
+    initConnect();
 
     _colorLayout = new QGridLayout();
 
@@ -19,6 +20,7 @@ ColorPaletteWidget::ColorPaletteWidget(): QWidget(0,Qt::FramelessWindowHint)
 
     _paletteLayout = new QHBoxLayout();
 
+    _paletteLayout->addWidget(_size);
     _paletteLayout->addWidget(_allColor);
     _paletteLayout->addLayout(_colorLayout);
     _paletteLayout->addStretch(1);
@@ -28,7 +30,10 @@ ColorPaletteWidget::ColorPaletteWidget(): QWidget(0,Qt::FramelessWindowHint)
 
 void ColorPaletteWidget::initButton()
 {
-    _allColor = new QPushButton("test");
+    _size = new QSpinBox();
+    _size->setValue(1);
+
+    _allColor = new QPushButton();
 
     red = new QPushButton();
     red->setStyleSheet("background-color: red;");
@@ -59,6 +64,12 @@ void ColorPaletteWidget::initButton()
 
     black = new QPushButton();
     black->setStyleSheet("background-color: black;");
+}
+
+void ColorPaletteWidget::initConnect()
+{
+    connect(_size, SIGNAL(valueChanged(int)), this, SLOT(sizePenButtonClicked(int)));
+
 }
 
 QPushButton *ColorPaletteWidget::getAllColorButton()
@@ -116,7 +127,20 @@ QPushButton *ColorPaletteWidget::getBlackButton()
     return black;
 }
 
-void ColorPaletteWidget::showPalette()
+QSpinBox *ColorPaletteWidget::getSizeButton()
 {
-    show();
+    return _size;
+}
+
+void ColorPaletteWidget::sizePenButtonClicked(int value)
+{
+
+    if(value <= 0)
+    {
+        _size->setValue(1);
+        emit sizePenClicked(1);
+        return;
+    }
+
+    emit sizePenClicked(value);
 }

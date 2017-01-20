@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QGridLayout>
+#include <QSpinBox>
 #include <QWidget>
 
 
@@ -12,6 +13,7 @@ class ColorPaletteWidget : public QWidget
 public:
     ColorPaletteWidget();
 
+    QSpinBox *getSizeButton();
     QPushButton *getAllColorButton();
     QPushButton *getRedButton();
     QPushButton *getOrangeButton();
@@ -25,11 +27,16 @@ public:
     QPushButton *getBlackButton();
 
 public slots:
-    void showPalette();
+    void sizePenButtonClicked(int value);
+
+signals:
+    void sizePenClicked(int);
 
 private:
     void initButton();
+    void initConnect();
 
+    QSpinBox *_size;
     QPushButton *_allColor;
 
     QPushButton *red;

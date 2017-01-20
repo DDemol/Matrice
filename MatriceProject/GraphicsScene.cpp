@@ -12,6 +12,7 @@ GraphicsScene::GraphicsScene(string name, QObject *parent) :
     _isDraw = true;
     _isEdit = false;
     _backupStatus = false;
+    _currentSizePen = 1;
     _selectedStroke = 0;
     _nbStrokeDraw = 0;
     _selectedTreeCurves = QList <CurveItem>();
@@ -23,7 +24,7 @@ GraphicsScene::~GraphicsScene()
     delete(_currentItem);
 }
 
-void GraphicsScene::addNewItem(QGraphicsItemGroup *item, QList<QPointF> points, QColor color)
+void GraphicsScene::addNewItem(QGraphicsItemGroup *item, QList<QPointF> points, QColor color, int sizePen)
 {
     QGraphicsItemGroup *newItem = new QGraphicsItemGroup();
     addItem(newItem);
@@ -33,6 +34,7 @@ void GraphicsScene::addNewItem(QGraphicsItemGroup *item, QList<QPointF> points, 
     curveItem.setItem(newItem);
     curveItem.setPoints(points);
     curveItem.setColor(color);
+    curveItem.setSizePen(sizePen);
 
     stringstream ss;
     ss << "Curves" << _nbStrokeDraw;
@@ -139,7 +141,7 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         _pointListe.push_back(QPointF(pt.x(),pt.y()));
 
         _currentItem->addToGroup(addLine(ptLast.x(),ptLast.y(),pt.x(), pt.y(),
-                                         QPen(_currentColor/*, size pen */)));
+                                         QPen(_currentColor,_currentSizePen)));
         _environment->update();
     }
 }
@@ -157,7 +159,7 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
         if(_isDraw)
         {
-            addNewItem(_currentItem, _pointListe, _currentColor);
+            addNewItem(_currentItem, _pointListe, _currentColor, _currentSizePen);
         }
         else if(_isEdit)
         {
@@ -178,7 +180,7 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
             }
 
             if(find)
-                addNewItem(_currentItem, _pointListe, _currentColor);
+                addNewItem(_currentItem, _pointListe, _currentColor, _currentSizePen);
             else
             {
                 removeItem(_currentItem);
@@ -258,15 +260,15 @@ bool GraphicsScene::findIntersectionPoint(CurveItem curveItem)
         return false;
 
     addItem(_intersectionPoints);
-    cutItem(_items[_selectedCurve].getPoints(), curveItem.getColor());
+    cutItem(_items[_selectedCurve].getPoints(), curveItem.getColor(), curveItem.getSizePen());
     removeItem(_items[_selectedCurve].getItem());
 
     for(int i = 0 ; i < _partStrokeList.size() ; i++)
     {
         if(i == _selectedStroke)
-            _partStrokeList[i].setItem(createGraphicsCurve(_partStrokeList[i].getPoints(), Qt::green));
+            _partStrokeList[i].setItem(createGraphicsCurve(_partStrokeList[i].getPoints(), Qt::green, _partStrokeList[i].getSizePen()));
         else
-            _partStrokeList[i].setItem(createGraphicsCurve(_partStrokeList[i].getPoints(), _partStrokeList[i].getColor()));
+            _partStrokeList[i].setItem(createGraphicsCurve(_partStrokeList[i].getPoints(), _partStrokeList[i].getColor(), _partStrokeList[i].getSizePen()));
 
         addItem(_partStrokeList[i].getItem());
     }
@@ -319,7 +321,7 @@ void GraphicsScene::editChoice()
     popUp->exec();
 }
 
-void GraphicsScene::cutItem(QList<QPointF> liste, QColor color)
+void GraphicsScene::cutItem(QList<QPointF> liste, QColor color, int sizePen)
 {
     int transitionPoint = 0;
 
@@ -342,10 +344,10 @@ void GraphicsScene::cutItem(QList<QPointF> liste, QColor color)
                 bool signXP = (liste.at(i).x() - _selectedPoints.at(p).x()) > 0;
                 bool signYP = (liste.at(i).y() - _selectedPoints.at(p).y()) > 0;
 
-                if((signX == signXP) && (signY == signYP)){
-                    separationPoint = i+1; cout << "next" <<endl;}
-                else if((signX != signXP) && (signY != signYP)){
-                    separationPoint = i; cout << "first" << endl;}
+                if((signX == signXP) && (signY == signYP))
+                    separationPoint = i+1;
+                else if((signX != signXP) && (signY != signYP))
+                    separationPoint = i;
             }
         }
 
@@ -356,6 +358,7 @@ void GraphicsScene::cutItem(QList<QPointF> liste, QColor color)
         {
             c.setPoints(liste.mid(transitionPoint, (separationPoint +1) - transitionPoint));
             c.setColor(color);
+            c.setSizePen(sizePen);
             _partStrokeList.push_back(c);
             transitionPoint = separationPoint;
         }
@@ -363,24 +366,26 @@ void GraphicsScene::cutItem(QList<QPointF> liste, QColor color)
         {
             c.setPoints(liste.mid(transitionPoint, (separationPoint +1) - transitionPoint));
             c.setColor(color);
+            c.setSizePen(sizePen);
             _partStrokeList.push_back(c);
             transitionPoint = separationPoint;
 
             c.setPoints(liste.mid(transitionPoint,liste.size() - separationPoint));
             c.setColor(color);
+            c.setSizePen(sizePen);
             _partStrokeList.push_back(c);
         }
 
     }
 }
 
-QGraphicsItemGroup* GraphicsScene::createGraphicsCurve(QList <QPointF> list, QColor color)
+QGraphicsItemGroup* GraphicsScene::createGraphicsCurve(QList <QPointF> list, QColor color, int sizePen)
 {
     QGraphicsItemGroup *newGraphicsCurve = new QGraphicsItemGroup();
 
     for(int i = 0 ; i < list.size() -1 ; i++)
     {
-        newGraphicsCurve->addToGroup(addLine(list.at(i).x(), list.at(i).y(), list.at(i+1).x(), list.at(i+1).y(), QPen(color)));
+        newGraphicsCurve->addToGroup(addLine(list.at(i).x(), list.at(i).y(), list.at(i+1).x(), list.at(i+1).y(), QPen(color,sizePen)));
     }
     return newGraphicsCurve;
 }
@@ -404,6 +409,11 @@ void GraphicsScene::setColorPen(QColor color)
 {
     _currentColor = color;
 }
+
+ void GraphicsScene::setSizePen(int value)
+ {
+     _currentSizePen = value;
+ }
 
 
 void GraphicsScene::setDraw()
@@ -431,9 +441,9 @@ void GraphicsScene::switchStroke()
     for(int i = 0 ; i < _partStrokeList.size() ; i++)
     {
         if(i == _selectedStroke)
-            drawCurve(_partStrokeList[i],Qt::green);
+            drawCurve(_partStrokeList[i],Qt::green, _partStrokeList[i].getSizePen());
         else
-            drawCurve(_partStrokeList[i],_partStrokeList[i].getColor());
+            drawCurve(_partStrokeList[i],_partStrokeList[i].getColor(), _partStrokeList[i].getSizePen());
     }
 
 }
@@ -443,7 +453,7 @@ void GraphicsScene::setSelectedRow(QString name)
     if(_selectedTreeCurves.size() != 0)
     {
         for(CurveItem item : _selectedTreeCurves)
-            drawCurve(item, item.getColor());
+            drawCurve(item, item.getColor(), item.getSizePen());
 
         _selectedTreeCurves.clear();
     }
@@ -452,7 +462,7 @@ void GraphicsScene::setSelectedRow(QString name)
     if(curve.getName() == "")
         return;
 
-    drawCurve(curve, QColor(255,80,40));
+    drawCurve(curve, QColor(255,80,40), curve.getSizePen());
     _selectedTreeCurves.push_back(curve);
 }
 
@@ -461,7 +471,7 @@ void GraphicsScene::setSelectedRows(QStringList names)
     if(_selectedTreeCurves.size() != 0)
     {
         for(CurveItem item : _selectedTreeCurves)
-            drawCurve(item, item.getColor());
+            drawCurve(item, item.getColor(), item.getSizePen());
 
         _selectedTreeCurves.clear();
     }
@@ -472,7 +482,7 @@ void GraphicsScene::setSelectedRows(QStringList names)
         if(curve.getName() == "")
             break;
 
-        drawCurve(curve, QColor(255,80,40));
+        drawCurve(curve, QColor(255,80,40), curve.getSizePen());
         _selectedTreeCurves.push_back(curve);
     }
 }
@@ -490,7 +500,7 @@ void GraphicsScene::deleteStroke()
             for(int j = 0 ; j < _partStrokeList[i].getPoints().size() ; j++)
                 curveList.push_back(_partStrokeList[i].getPoints().at(j));
 
-            curveGraphics = createGraphicsCurve(curveList, _items[_selectedCurve].getColor());
+            curveGraphics = createGraphicsCurve(curveList, _items[_selectedCurve].getColor(), _items[_selectedCurve].getSizePen());
 
             removeItem(_partStrokeList[i].getItem());
         }
@@ -568,13 +578,13 @@ CurveItem GraphicsScene::findCurveItem(QString name)
     return CurveItem();
 }
 
-void GraphicsScene::drawCurve(CurveItem curveItem, QColor color)
+void GraphicsScene::drawCurve(CurveItem curveItem, QColor color, int sizePen)
 {
     QList <QGraphicsItem *> l = curveItem.getItem()->childItems();
 
     for(QGraphicsItem * item : l)
     {
-        ( qgraphicsitem_cast<QGraphicsLineItem *> (item))->setPen(QPen(color));
+        ( qgraphicsitem_cast<QGraphicsLineItem *> (item))->setPen(QPen(color,sizePen));
     }
 }
 
@@ -582,7 +592,7 @@ void GraphicsScene::drawAllCurves()
 {
     for(int i = 0 ; i < _items.size() ; i++)
     {
-        _items[i].setItem(createGraphicsCurve(_items[i].getPoints(), _items[i].getColor()));
+        _items[i].setItem(createGraphicsCurve(_items[i].getPoints(), _items[i].getColor(), _items[i].getSizePen()));
         addItem(_items[i].getItem());
         emit newItemSignal(_items[i]);
     }
