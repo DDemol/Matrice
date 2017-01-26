@@ -6,6 +6,8 @@
 #include <QSpinBox>
 #include <QWidget>
 
+#include "CSSWidget.h"
+
 
 class ColorPaletteWidget : public QWidget
 {

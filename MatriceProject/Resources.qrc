@@ -7,5 +7,7 @@
         <file>Resources/edit.png</file>
         <file>Resources/gesture.png</file>
         <file>Resources/separator.png</file>
+        <file>Resources/add.png</file>
+        <file>Resources/delete.png</file>
     </qresource>
 </RCC>

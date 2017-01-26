@@ -32,8 +32,10 @@ void ColorPaletteWidget::initButton()
 {
     _size = new QSpinBox();
     _size->setValue(1);
+    _size->setStyleSheet(CSSWidget::getSpinBoxStyleSheet());
 
     _allColor = new QPushButton();
+    _allColor->setStyleSheet(CSSWidget::getButtonStyleSheet(":/Resources/color.png"));
 
     red = new QPushButton();
     red->setStyleSheet("background-color: red;");

@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 
 #include "TreeCurveWidget.h"
+#include "CSSWidget.h"
 
 class TreeWidget : public QWidget
 {

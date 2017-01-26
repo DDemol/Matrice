@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     Tree/TreeItem.cpp \
     Tree/TreeModel.cpp \
     Tree/TreeCurveWidget.cpp \
-    Tree/TreeWidget.cpp
+    Tree/TreeWidget.cpp \
+    CSSWidget.cpp
 
 HEADERS += \
     Leap.h \
@@ -49,7 +50,8 @@ HEADERS += \
     Tree/TreeItem.h \
     Tree/TreeModel.h \
     Tree/TreeCurveWidget.h \
-    Tree/TreeWidget.h
+    Tree/TreeWidget.h \
+    CSSWidget.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lib/ -lGina
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lib/ -llibGina0.2d

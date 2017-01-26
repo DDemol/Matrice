@@ -5,8 +5,10 @@ TreeWidget::TreeWidget(QList<CurveItem> *curves): QWidget(0,Qt::FramelessWindowH
 
     _hLayout = new QHBoxLayout();
 
-    _add = new QPushButton("ADD");
-    _delete = new QPushButton("DEL");
+    _add = new QPushButton();
+    _add->setStyleSheet(CSSWidget::getButtonStyleSheet(":/Resources/add.png"));
+    _delete = new QPushButton();
+    _delete->setStyleSheet(CSSWidget::getButtonStyleSheet(":/Resources/delete.png"));
 
     _hLayout->addWidget(_add);
     _hLayout->addWidget(_delete);
