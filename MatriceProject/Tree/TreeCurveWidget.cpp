@@ -94,6 +94,8 @@ void TreeCurveWidget::insertRow(CurveItem item)
     QString ss = qvariant_cast<QString>(var);
 
     qDebug(ss.toLatin1());*/
+
+    expandAll();
     _nbRow++;
 }
 

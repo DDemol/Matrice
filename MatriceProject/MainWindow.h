@@ -21,7 +21,7 @@
 
 #include "GraphicsScene.h"
 #include "ColorPaletteWidget.h"
-#include "Tree/TreeCurveWidget.h"
+#include "Tree/TreeWidget.h"
 #include "Tree/TreeModel.h"
 
 class MainWindow: public QMainWindow
@@ -67,7 +67,7 @@ private:
 
     ColorPaletteWidget *palette;
 
-    TreeCurveWidget *tree;
+    TreeWidget *tree;
     TreeModel *model;
 
     QHBoxLayout *hbox;

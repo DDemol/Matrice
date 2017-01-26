@@ -60,7 +60,7 @@ void MainWindow::setScene(GraphicsScene *scene)
 
     palette = new ColorPaletteWidget();
 
-    tree = new TreeCurveWidget(&_scene->getItem());
+    tree = new TreeWidget(&_scene->getItem());
 
     QButtonGroup* group = new QButtonGroup();
 
@@ -112,15 +112,15 @@ void MainWindow::setScene(GraphicsScene *scene)
     QWidget::connect(draw, SIGNAL(clicked()), _scene, SLOT(setDraw()));
     QWidget::connect(edit, SIGNAL(clicked()), _scene, SLOT(setEdit()));
     QWidget::connect(recognize, SIGNAL(clicked()), _scene, SLOT(setRecognize()));
-    QWidget::connect(tree, SIGNAL(selectedRow(QString)) , _scene, SLOT(setSelectedRow(QString)));
-    QWidget::connect(tree, SIGNAL(selectedRows(QStringList)), _scene, SLOT(setSelectedRows(QStringList)));
-    QWidget::connect(tree,SIGNAL(sendNewName(QString,QString)),_scene,SLOT(changedName(QString,QString)));
+    QWidget::connect(tree->getTree(), SIGNAL(selectedRow(QString)) , _scene, SLOT(setSelectedRow(QString)));
+    QWidget::connect(tree->getTree(), SIGNAL(selectedRows(QStringList)), _scene, SLOT(setSelectedRows(QStringList)));
+    QWidget::connect(tree->getTree(),SIGNAL(sendNewName(QString,QString)),_scene,SLOT(changedName(QString,QString)));
     QWidget::connect(palette, SIGNAL(sizePenClicked(int)),_scene,SLOT(setSizePen(int)));
 
 
-    QWidget::connect(this, SIGNAL(resetTree(QList <CurveItem>)), tree , SLOT(removeAll(QList <CurveItem>)));
-    QWidget::connect(_scene,SIGNAL(newItemSignal(CurveItem)),tree,SLOT(insertRow(CurveItem)));
-    QWidget::connect(_scene,SIGNAL(removeItemSignal(CurveItem)),tree,SLOT(removeRow(CurveItem)));
+    QWidget::connect(this, SIGNAL(resetTree(QList <CurveItem>)), tree->getTree() , SLOT(removeAll(QList <CurveItem>)));
+    QWidget::connect(_scene,SIGNAL(newItemSignal(CurveItem)),tree->getTree(),SLOT(insertRow(CurveItem)));
+    QWidget::connect(_scene,SIGNAL(removeItemSignal(CurveItem)),tree->getTree(),SLOT(removeRow(CurveItem)));
 
 
     QWidget::connect(palette->getAllColorButton(),SIGNAL(clicked()),this,SLOT(allColor()));
